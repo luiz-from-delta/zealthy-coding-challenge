@@ -19,8 +19,8 @@ model User {
   email     String @unique
   cognitoId String @unique
 
-  aboutMe   String
-  birthDate DateTime
+  aboutMe   String?   @db.VarChar(500)
+  birthDate DateTime?
 
   createdAt DateTime @default(now())
 
