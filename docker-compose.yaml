@@ -1,0 +1,40 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    container_name: app
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - DATABASE_URL=postgresql://root:example@db:5432/users?schema=public
+    networks:
+      - node-network
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  db:
+    container_name: db
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: users
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "root", "-d", "users"]
+      interval: 30s
+      retries: 3
+      timeout: 10s
+      start_period: 10s
+    image: postgres:latest
+    networks:
+      - node-network
+    ports:
+      - "5432:5432"
+
+networks:
+  node-network:
+    driver: bridge
