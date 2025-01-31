@@ -10,6 +10,7 @@ import { useCallback, useState } from "react";
 
 export const steps: StepList = [
   {
+    name: "Email and password",
     getContent: () => OnboardingStep.FirstStep,
     nextButton: {
       action: async (values?: UserSchema) => {
@@ -36,6 +37,7 @@ export const steps: StepList = [
     },
   },
   {
+    name: "About me",
     getContent: () => OnboardingStep.SecondStep,
     nextButton: {
       action: async (values?: UserSchema, user?: UserWithId) => {
@@ -66,6 +68,7 @@ export const steps: StepList = [
     },
   },
   {
+    name: "Address and birth date",
     getContent: () => OnboardingStep.ThirdStep,
     nextButton: {
       action: async (values?: UserSchema, user?: UserWithId) => {
@@ -138,7 +141,7 @@ export function Steps() {
   );
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)}>
+    <form onSubmit={form.handleSubmit(onSubmit)} className="w-full mt-6">
       <Content />
 
       <div className="w-full flex gap-4">

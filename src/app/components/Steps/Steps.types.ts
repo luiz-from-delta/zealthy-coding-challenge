@@ -24,6 +24,7 @@ type StepActionButton = {
 };
 
 export type Step = {
+  name: string;
   getContent: () => React.FC;
   nextButton?: StepActionButton;
   prevButton?: StepActionButton;

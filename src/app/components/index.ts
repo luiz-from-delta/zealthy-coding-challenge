@@ -5,6 +5,8 @@ export * from "./Header";
 export * from "./InputText";
 export * from "./InternalDataLayout";
 export * from "./Steps";
+export * from "./StepsIndicator";
+export * from "./StepsInstructions";
 export * from "./UserDataTable";
 
 export * as OnboardingStep from "./onboardingSteps";

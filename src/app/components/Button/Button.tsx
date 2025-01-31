@@ -14,10 +14,11 @@ export function Button({
     <button
       {...props}
       className={cx(
-        "w-full h-10 rounded font-bold",
+        "w-full h-10 rounded font-bold transition-colors",
         {
-          "bg-primary-green text-white": variant === "primary",
-          "bg-transparent text-primary-green border border-solid border-primary-green":
+          "bg-primary-green text-white hover:bg-dark-primary-green":
+            variant === "primary",
+          "bg-transparent text-primary-green border border-solid border-primary-green hover:text-dark-primary-green hover:border-dark-primary-green":
             variant === "outline",
           "opacity-50 cursor-not-allowed": props.disabled || isLoading,
         },

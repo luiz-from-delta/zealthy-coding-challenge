@@ -30,7 +30,7 @@ export default function RootLayout({
         <main className="w-full h-[calc(100vh-100px)] overflow-x-hidden overflow-y-auto">
           {children}
         </main>
-        <div className="w-full h-3 absolute left-0 bottom-6">
+        <div className="w-full h-3 absolute left-0 bottom-6 flex justify-center">
           <Image src={bottomBarLine} alt="" />
         </div>
       </body>

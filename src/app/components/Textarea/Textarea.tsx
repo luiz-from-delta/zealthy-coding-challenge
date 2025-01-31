@@ -26,7 +26,7 @@ export function Textarea({
           {...props}
           name={name}
           className={cx(
-            "text-paragraph text-input w-full h-[200px] rounded bg-input-background p-4 resize-none outline-none focus:ring-1 focus:ring-primary-green",
+            "text-paragraph text-input w-full h-[200px] rounded bg-input-background p-4 resize-none outline-none focus:ring-1 focus:ring-primary-green hover:ring-1 hover:ring-primary-green transition-all",
             inputClassName
           )}
           placeholder={placeholder}
