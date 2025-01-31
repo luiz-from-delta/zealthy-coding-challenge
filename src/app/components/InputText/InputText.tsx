@@ -32,7 +32,11 @@ export function InputText({
           )}
           placeholder={placeholder}
         />
-        {RightIcon && <RightIcon />}
+        {RightIcon && (
+          <div className="absolute top-1/2 -mt-[7px] right-4">
+            <RightIcon size={14} />
+          </div>
+        )}
       </div>
     </div>
   );
