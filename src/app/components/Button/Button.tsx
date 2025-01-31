@@ -6,6 +6,7 @@ export function Button({
   RightIcon,
   children,
   className,
+  isLoading = false,
   variant = "primary",
   ...props
 }: ButtonProps) {
@@ -18,9 +19,11 @@ export function Button({
           "bg-primary-green text-white": variant === "primary",
           "bg-transparent text-primary-green border border-solid border-primary-green":
             variant === "outline",
+          "opacity-50 cursor-not-allowed": props.disabled || isLoading,
         },
         className
       )}
+      disabled={props.disabled || isLoading}
     >
       {LeftIcon && <LeftIcon />}
       {children}

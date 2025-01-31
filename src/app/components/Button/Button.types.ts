@@ -6,6 +6,8 @@ export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
   React.PropsWithChildren<{
     className?: string;
 
+    isLoading?: boolean;
+
     LeftIcon?: Icon;
     RightIcon?: Icon;
 

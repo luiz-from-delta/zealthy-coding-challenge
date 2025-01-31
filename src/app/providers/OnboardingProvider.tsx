@@ -1,13 +1,21 @@
 "use client";
 
-import { createContext, useContext, useMemo, useReducer } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useReducer,
+  useState,
+} from "react";
 import { Step, steps } from "@/app/components";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { userSchema } from "../api/user/validations";
 
-type UserSchema = z.infer<typeof userSchema>;
+export type UserSchema = z.infer<typeof userSchema>;
+
+export type UserWithId = UserSchema & { id: number };
 
 type OnboardingContextType = {
   form: UseFormReturn<UserSchema>;
@@ -15,6 +23,8 @@ type OnboardingContextType = {
   step: Step;
   prev: () => void;
   next: () => void;
+  user: UserWithId;
+  setUser: React.Dispatch<React.SetStateAction<UserWithId>>;
 };
 
 function reducer(state: number, action: { type: "prev" | "next" }): number {
@@ -41,6 +51,8 @@ export const OnboardingContext = createContext<OnboardingContextType>(
 export function OnboardingProvider({ children }: React.PropsWithChildren) {
   const [index, dispatch] = useReducer(reducer, 0);
 
+  const [user, setUser] = useState<UserWithId>({} as UserWithId);
+
   const form = useForm<UserSchema>({
     resolver: zodResolver(userSchema),
     mode: "all",
@@ -52,8 +64,10 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
       step: steps[index],
       prev: () => dispatch({ type: "prev" }),
       next: () => dispatch({ type: "next" }),
+      user,
+      setUser,
     }),
-    [index]
+    [index, user]
   );
 
   return (

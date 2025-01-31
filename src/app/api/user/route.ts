@@ -120,15 +120,15 @@ export async function POST(request: Request) {
           data: {
             aboutMe,
             ...(address && { address: { create: address } }),
-            birthDate,
+            birthDate: birthDate ? new Date(birthDate) : undefined,
             cognitoId,
             email,
           },
         });
 
-        const [_, user] = await Promise.all([
-          passwordUpdatePromise,
+        const [user] = await Promise.all([
           userCreationPromise,
+          passwordUpdatePromise,
         ]);
 
         return user;
@@ -140,7 +140,9 @@ export async function POST(request: Request) {
               UserPoolId: process.env.AWS_COGNITO_USER_POOL_ID || "",
             })
             .promise();
-        } catch (error) {}
+        } catch (error) {
+          console.error(error);
+        }
 
         throw error;
       }
@@ -150,7 +152,7 @@ export async function POST(request: Request) {
       JSON.stringify({ data: user, error: null, success: true }),
       {
         headers: { "Content-Type": "application/json" },
-        status: 200,
+        status: 201,
       }
     );
   } catch (error) {

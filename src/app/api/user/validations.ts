@@ -37,3 +37,13 @@ export const userSchema = z.object({
 
   address: userAddressSchema.optional(),
 });
+
+export const userPatchSchema = z.object({
+  aboutMe: z
+    .string()
+    .max(500, "About Me must contain up to 500 characters.")
+    .optional(),
+  birthDate: z.string().optional(),
+
+  address: userAddressSchema.optional(),
+});
