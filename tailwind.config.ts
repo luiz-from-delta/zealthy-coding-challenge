@@ -17,6 +17,9 @@ export default {
       fontSize: {
         input: "0.8125rem",
       },
+      dropShadow: {
+        default: "0 1px 48px rgba(39, 62, 86, 0.08)",
+      },
     },
   },
   plugins: [],
