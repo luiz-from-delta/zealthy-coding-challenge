@@ -1,3 +1,5 @@
+import { OnboardingStep } from "../components";
+
 export default function Home() {
-  return <div>Hi!</div>;
+  return <OnboardingStep.FirstStep />;
 }

@@ -7,6 +7,7 @@ import { Header } from "./components";
 const mulishSans = Mulish({
   variable: "--font-mulish-sans",
   subsets: ["latin"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
 export const metadata: Metadata = {

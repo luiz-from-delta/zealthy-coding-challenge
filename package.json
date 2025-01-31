@@ -11,7 +11,9 @@
   "dependencies": {
     "@prisma/client": "^6.3.0",
     "aws-sdk": "^2.1692.0",
+    "classnames": "^2.5.1",
     "next": "15.1.6",
+    "phosphor-react": "^1.4.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "zod": "^3.24.1"

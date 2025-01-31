@@ -5,6 +5,8 @@
 html,
 body {
   @apply overflow-hidden;
+
+  font-family: "Mulish", sans-serif;
 }
 
 body {
