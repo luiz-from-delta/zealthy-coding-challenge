@@ -1,6 +1,7 @@
 export * from "./AddressInput";
 export * from "./Button";
 export * from "./ErrorWrapper";
+export * from "./FeedbackLayout";
 export * from "./Header";
 export * from "./InputText";
 export * from "./InternalDataLayout";
