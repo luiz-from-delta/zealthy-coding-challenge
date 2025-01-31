@@ -9,12 +9,13 @@ export default {
   theme: {
     extend: {
       colors: {
+        "input-background": "#EFEFEF",
         "light-lime": "#F2F4E9",
         "primary-green": "#59AA74",
         paragraph: "#273E56",
-        "input-background": "#EFEFEF",
       },
       fontSize: {
+        description: "0.8125rem",
         input: "0.8125rem",
       },
       dropShadow: {
