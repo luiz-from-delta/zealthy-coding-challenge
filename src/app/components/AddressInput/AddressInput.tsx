@@ -1,7 +1,7 @@
 import { AddressInputProps } from "./AddressInput.types";
 
 const inputClassName =
-  "text-paragraph text-input w-full h-10 rounded bg-input-background px-4";
+  "text-paragraph text-input w-full h-10 rounded bg-input-background px-4  outline-none focus:ring-1 focus:ring-primary-green";
 
 export function AddressInput({}: AddressInputProps) {
   return (

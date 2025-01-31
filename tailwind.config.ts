@@ -12,6 +12,7 @@ export default {
         "input-background": "#EFEFEF",
         "light-lime": "#F2F4E9",
         "primary-green": "#59AA74",
+        error: "#EE262A",
         paragraph: "#273E56",
       },
       fontSize: {

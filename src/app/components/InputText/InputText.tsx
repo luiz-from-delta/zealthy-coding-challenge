@@ -27,7 +27,7 @@ export function InputText({
           {...props}
           name={name}
           className={cx(
-            "text-paragraph text-input w-full h-10 rounded bg-input-background px-4",
+            "text-paragraph text-input w-full h-10 rounded bg-input-background px-4 outline-none focus:ring-1 focus:ring-primary-green",
             inputClassName
           )}
           placeholder={placeholder}

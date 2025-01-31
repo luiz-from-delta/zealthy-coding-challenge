@@ -1,3 +1,5 @@
+"use client";
+
 import { Textarea } from "../../Textarea";
 import { StepLayout } from "../StepLayout";
 

@@ -1,16 +1,34 @@
+"use client";
+
+import { useOnboarding } from "@/app/providers";
 import { InputText } from "../../InputText";
 import { StepLayout } from "../StepLayout";
+import { ErrorWrapper } from "../../ErrorWrapper";
 
 export function FirstStep() {
+  const { form } = useOnboarding();
+  const {
+    formState: { errors },
+    register,
+  } = form;
+
   return (
     <StepLayout>
-      <InputText label="Email" name="email" placeholder="Type your email..." />
-      <InputText
-        label="Password"
-        name="password"
-        placeholder="Type your password..."
-        type="password"
-      />
+      <ErrorWrapper error={errors.email?.message}>
+        <InputText
+          label="Email"
+          placeholder="Type your email..."
+          {...register("email")}
+        />
+      </ErrorWrapper>
+      <ErrorWrapper error={errors.password?.message}>
+        <InputText
+          label="Password"
+          placeholder="Type your password..."
+          type="password"
+          {...register("password")}
+        />
+      </ErrorWrapper>
     </StepLayout>
   );
 }
