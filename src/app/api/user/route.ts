@@ -11,8 +11,8 @@ export async function GET(request: Request) {
   const pageNumber = params.get("pageNumber");
   const pageSize = params.get("pageSize");
 
-  const take = pageSize ? parseInt(pageSize) : 10;
-  const skip = pageNumber ? parseInt(pageNumber) * take : 0;
+  const take = pageSize ? parseInt(pageSize) : undefined;
+  const skip = pageNumber && take ? parseInt(pageNumber) * take : 0;
 
   try {
     const users = await db.user.findMany({
