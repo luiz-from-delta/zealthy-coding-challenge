@@ -7,6 +7,7 @@ import { ArrowLeft, ArrowRight } from "phosphor-react";
 import { OnboardingStep } from "../index";
 import { StepList } from "./Steps.types";
 import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export const steps: StepList = [
   {
@@ -102,10 +103,12 @@ export const steps: StepList = [
 ];
 
 export function Steps() {
-  const { form, next, prev, step, setUser, user } = useOnboarding();
+  const { form, index, next, prev, step, setUser, user } = useOnboarding();
   const { getContent, nextButton, prevButton } = step;
 
   const [isLoading, setIsLoading] = useState(false);
+
+  const { push } = useRouter();
 
   const Content = getContent();
 
@@ -127,6 +130,10 @@ export function Steps() {
 
         setTimeout(() => {
           next();
+
+          if (index === 2) {
+            push("/success");
+          }
         }, 0);
       } catch (error) {
         console.error(error);
@@ -137,7 +144,7 @@ export function Steps() {
         setIsLoading(false);
       }
     },
-    [next, nextButton, setUser, user]
+    [index, next, nextButton, push, setUser, user]
   );
 
   return (
