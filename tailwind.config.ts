@@ -14,6 +14,10 @@ export default {
         "primary-green": "#59AA74",
         error: "#EE262A",
         paragraph: "#273E56",
+        "table-border": "#D8D8D8",
+        "table-header": "#E9E9E9",
+        "table-row-odd": "#FAFAFA",
+        "table-row-even": "#FFFFFF",
       },
       fontSize: {
         description: "0.8125rem",
