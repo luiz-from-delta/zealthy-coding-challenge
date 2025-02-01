@@ -21,7 +21,7 @@ export default async function UserDataPreviewPage() {
     data: users,
     error,
     success,
-  } = await new Promise<ApiResponse>(async (resolve, reject) => {
+  } = await new Promise<ApiResponse>(async (resolve) => {
     try {
       const usersResponse = await fetch(
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`,
@@ -33,7 +33,7 @@ export default async function UserDataPreviewPage() {
 
       resolve({ error, success, data: users });
     } catch (error) {
-      reject({ error: (error as Error).message, success: false, data: null });
+      resolve({ error: (error as Error).message, success: false, data: null });
     }
   });
 
