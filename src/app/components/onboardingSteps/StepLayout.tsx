@@ -7,5 +7,5 @@ export const componentsMap = {
 };
 
 export function StepLayout({ children }: React.PropsWithChildren) {
-  return <div className="w-full h-[320px] flex flex-col gap-6">{children}</div>;
+  return <div className="w-full h-[480px] flex flex-col gap-6">{children}</div>;
 }

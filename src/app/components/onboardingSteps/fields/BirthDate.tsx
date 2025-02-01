@@ -1,22 +1,23 @@
 import { useOnboarding } from "@/app/providers";
 import { ErrorWrapper } from "../../ErrorWrapper";
-import { InputText } from "../../InputText";
-import { CaretDown } from "phosphor-react";
+import { DatePicker } from "../../DatePicker";
 
 export function BirthDate() {
   const { form } = useOnboarding();
   const {
     formState: { errors },
-    register,
+    setValue,
+    watch,
   } = form;
 
   return (
     <ErrorWrapper error={errors.birthDate?.message}>
-      <InputText
+      <DatePicker
         label="Birth Date"
         placeholder="Type or select your birth date..."
-        RightIcon={CaretDown}
-        {...register("birthDate")}
+        name="birthDate"
+        value={watch("birthDate") || null}
+        onChange={(date) => setValue("birthDate", date || undefined)}
       />
     </ErrorWrapper>
   );

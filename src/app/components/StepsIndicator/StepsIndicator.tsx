@@ -7,8 +7,6 @@ import cx from "classnames";
 export function StepsIndicator() {
   const { config, index: currentIndex } = useOnboarding();
 
-  console.log({ config });
-
   return (
     <div className="w-full flex items-center gap-1">
       {steps(config).map((step, index) => (

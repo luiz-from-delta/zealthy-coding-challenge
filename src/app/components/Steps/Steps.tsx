@@ -86,7 +86,7 @@ export const steps: (
     nextButton: {
       action: async (values?: UserSchema, user?: UserWithId) => {
         const fields = Object.fromEntries(
-          Object.values(config["second-page"] || {}).map((field) => {
+          Object.values(config["third-page"] || {}).map((field) => {
             const key = fieldsMap[field];
             const value = (values || {})[key];
             return [key, value];

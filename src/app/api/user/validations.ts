@@ -33,7 +33,7 @@ export const userSchema = z.object({
     .string()
     .max(500, "About Me must contain up to 500 characters.")
     .optional(),
-  birthDate: z.string().optional(),
+  birthDate: z.date().optional(),
 
   address: userAddressSchema.optional(),
 });

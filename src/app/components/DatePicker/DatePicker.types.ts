@@ -1,4 +1,4 @@
-export type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
+export type DatePickerProps = {
   wrapperClassName?: string;
   labelClassName?: string;
   inputClassName?: string;
@@ -6,4 +6,7 @@ export type InputTextProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label: string;
   name: string;
   placeholder: string;
+
+  value: Date | null;
+  onChange: (date: Date | null) => void;
 };

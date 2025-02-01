@@ -25,6 +25,9 @@ export default {
         description: "0.8125rem",
         input: "0.8125rem",
       },
+      fontFamily: {
+        mulish: "Mulish, sans-serif",
+      },
       dropShadow: {
         default: "0 1px 48px rgba(39, 62, 86, 0.08)",
       },
