@@ -2,6 +2,7 @@ import { db } from "@/app/lib/prisma";
 import { userSchema } from "./validations";
 import { cognitoService } from "@/app/lib/aws";
 import { CognitoIdentityServiceProvider } from "aws-sdk";
+import crypto from "node:crypto";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -70,7 +71,54 @@ export async function POST(request: Request) {
   try {
     const { aboutMe, address, birthDate, email, password } = validation.data;
 
-    const user = await db.$transaction(async (trx) => {
+    const user = await db.user.findFirst({
+      include: { address: true },
+      where: { email },
+    });
+
+    if (user) {
+      const secretHash = crypto
+        .createHmac("sha256", process.env.AWS_COGNITO_CLIENT_SECRET || "")
+        .update(`${email}${process.env.AWS_COGNITO_CLIENT_ID}`)
+        .digest("base64");
+
+      const auth = await cognitoService
+        .adminInitiateAuth({
+          AuthFlow: "ADMIN_USER_PASSWORD_AUTH",
+          AuthParameters: {
+            USERNAME: email,
+            PASSWORD: password,
+            SECRET_HASH: secretHash,
+          },
+          ClientId: process.env.AWS_COGNITO_CLIENT_ID || "",
+          UserPoolId: process.env.AWS_COGNITO_USER_POOL_ID || "",
+        })
+        .promise();
+
+      if (auth.AuthenticationResult?.AccessToken) {
+        return new Response(
+          JSON.stringify({ data: user, error: null, success: true }),
+          {
+            headers: { "Content-Type": "application/json" },
+            status: 200,
+          }
+        );
+      }
+
+      return new Response(
+        JSON.stringify({
+          data: null,
+          error: "Not authorized.",
+          success: false,
+        }),
+        {
+          headers: { "Content-Type": "application/json" },
+          status: 401,
+        }
+      );
+    }
+
+    const createdUser = await db.$transaction(async (trx) => {
       try {
         const params: CognitoIdentityServiceProvider.AdminCreateUserRequest = {
           MessageAction: "SUPPRESS",
@@ -149,7 +197,7 @@ export async function POST(request: Request) {
     });
 
     return new Response(
-      JSON.stringify({ data: user, error: null, success: true }),
+      JSON.stringify({ data: createdUser, error: null, success: true }),
       {
         headers: { "Content-Type": "application/json" },
         status: 201,

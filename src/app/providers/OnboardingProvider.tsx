@@ -3,6 +3,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useReducer,
   useState,
@@ -64,6 +65,50 @@ export function OnboardingProvider({
     mode: "all",
   });
 
+  useEffect(() => {
+    if (!user.id) {
+      return;
+    }
+
+    const fields = Object.fromEntries(
+      Object.entries({
+        aboutMe: user.aboutMe,
+        birthDate: user.birthDate,
+        address: user.address,
+      })
+        .filter(([_, value]) => value)
+        .map(([key]) => [key, true])
+    );
+
+    const partialSchema = userSchema.pick(
+      fields as Partial<Record<keyof UserSchema, true>>
+    );
+
+    const userInfo: UserSchema = {
+      ...user,
+      birthDate: user.birthDate ? new Date(user.birthDate) : undefined,
+    };
+
+    if (partialSchema.safeParse(userInfo).success) {
+      if ("aboutMe" in fields) {
+        form.setValue("aboutMe", userInfo.aboutMe);
+      }
+      if ("birthDate" in fields) {
+        form.setValue("birthDate", userInfo.birthDate);
+      }
+      if ("address" in fields) {
+        form.setValue("address.city", userInfo.address?.city || "");
+        form.setValue("address.state", userInfo.address?.state || "");
+        form.setValue(
+          "address.streetAddress",
+          userInfo.address?.streetAddress || ""
+        );
+        form.setValue("address.zipCode", userInfo.address?.zipCode || "");
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.id]);
+
   const value = useMemo(
     () => ({
       index,
@@ -73,6 +118,7 @@ export function OnboardingProvider({
       user,
       setUser,
     }),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [index, user]
   );
 

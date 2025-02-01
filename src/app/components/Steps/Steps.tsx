@@ -149,7 +149,7 @@ export function Steps() {
           push("/success");
         }
       } catch (error) {
-        console.error("aqui", error);
+        console.error(error);
         /**
          * @todo Handle errors here, show error toasts, etc.
          */
