@@ -2,8 +2,8 @@
 
 import cx from "classnames";
 import { ArrowLeft, ArrowRight, PushPin } from "phosphor-react";
-import { Button } from "../Button";
-import { Fragment } from "react";
+import { Fragment, useMemo } from "react";
+import { OnboardingCustomizationProps } from "./OnboardingCustomization.types";
 
 const pages: {
   title: string;
@@ -23,31 +23,48 @@ const pages: {
     title: "First Page",
   },
   {
-    components: [
-      {
-        name: "About Me",
-      },
-    ],
+    components: [],
     title: "Second Page",
   },
   {
-    components: [
-      {
-        name: "Address",
-      },
-      {
-        name: "Birth Date",
-      },
-    ],
+    components: [],
     title: "Third Page",
   },
 ];
 
-export function OnboardingCustomization() {
+export function OnboardingCustomization({
+  config,
+  rearrange,
+}: OnboardingCustomizationProps) {
+  const actualPages = useMemo(
+    () =>
+      pages.map((page, pageIndex) => {
+        if (pageIndex === 0) {
+          return page;
+        }
+
+        const key = pageIndex === 1 ? "second-page" : "third-page";
+        const components = config[key];
+
+        return {
+          ...page,
+          components: [
+            {
+              name: components["first-component"],
+            },
+            ...(components["second-component"]
+              ? [{ name: components["second-component"] }]
+              : []),
+          ],
+        };
+      }),
+    [config]
+  );
+
   return (
     <div className="w-full flex flex-col gap-16 items-end">
       <div className="w-full flex items-start gap-16">
-        {pages.map((page, pageIndex) => (
+        {actualPages.map((page, pageIndex) => (
           <div
             key={page.title}
             className="w-full h-[360px] bg-white drop-shadow-default rounded-lg px-8 py-6 flex flex-col gap-6"
@@ -56,7 +73,7 @@ export function OnboardingCustomization() {
               {page.title}
             </span>
             <ul className="w-full flex flex-col gap-3">
-              {page.components.map((component, _, components) => {
+              {page.components.map((component, componentIndex, components) => {
                 const icon = (() => {
                   if (component.isFixed) {
                     return <PushPin />;
@@ -86,21 +103,31 @@ export function OnboardingCustomization() {
                       )}
                     >
                       <span>{component.name}</span>
-                      <button
-                        className={cx(
-                          "size-[1.875rem] rounded-full bg-opacity-10 flex items-center justify-center",
-                          {
-                            "bg-paragraph text-paragraph": component.isFixed,
-                            "bg-primary-green text-primary-green hover:bg-opacity-20":
-                              !component.isFixed && canBeMoved,
-                            "bg-warning text-warning":
-                              !component.isFixed && !canBeMoved,
-                          }
-                        )}
-                        disabled={component.isFixed}
-                      >
-                        {icon}
-                      </button>
+                      {canBeMoved && (
+                        <button
+                          className={cx(
+                            "size-[1.875rem] rounded-full bg-opacity-10 flex items-center justify-center",
+                            component.isFixed
+                              ? "bg-paragraph text-paragraph"
+                              : "bg-primary-green text-primary-green hover:bg-opacity-20"
+                          )}
+                          disabled={component.isFixed}
+                          onClick={() => {
+                            rearrange(
+                              pageIndex === 1 ? "second-page" : "third-page",
+                              componentIndex
+                                ? "first-component"
+                                : "second-component",
+                              component.name,
+                              components.find(
+                                ({ name }) => component.name !== name
+                              )?.name as string
+                            );
+                          }}
+                        >
+                          {icon}
+                        </button>
+                      )}
                     </li>
                     {!canBeMoved && (
                       <span className="text-sm text-warning font-semibold">
@@ -116,7 +143,7 @@ export function OnboardingCustomization() {
         ))}
       </div>
 
-      <Button className="!w-[120px]">Update</Button>
+      {/* <Button className="!w-[120px]">Update</Button> */}
     </div>
   );
 }
