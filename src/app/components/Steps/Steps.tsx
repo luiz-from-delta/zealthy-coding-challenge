@@ -153,6 +153,7 @@ export function Steps() {
         /**
          * @todo Handle errors here, show error toasts, etc.
          */
+        alert((error as Error).message);
       } finally {
         setIsLoading(false);
       }
