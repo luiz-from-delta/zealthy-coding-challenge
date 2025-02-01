@@ -1,6 +1,6 @@
 import { User, UserAddress } from "@prisma/client";
 
-type UserWithAddress = User & { address: UserAddress };
+export type UserWithAddress = User & { address: UserAddress };
 
 export type Column<K extends keyof UserWithAddress> = {
   key: K;

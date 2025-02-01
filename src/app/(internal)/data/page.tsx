@@ -1,13 +1,41 @@
-import { InternalDataLayout, UserDataTable } from "@/app/components";
+import {
+  InternalDataLayout,
+  UserDataTable,
+  UserWithAddress,
+} from "@/app/components";
+
+type ApiResponse =
+  | {
+      data: UserWithAddress[];
+      error: null;
+      success: true;
+    }
+  | {
+      data: null;
+      error: string;
+      success: false;
+    };
 
 export default async function UserDataPreviewPage() {
-  const usersResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`,
-    {
-      method: "GET",
+  const {
+    data: users,
+    error,
+    success,
+  } = await new Promise<ApiResponse>(async (resolve, reject) => {
+    try {
+      const usersResponse = await fetch(
+        `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`,
+        {
+          method: "GET",
+        }
+      );
+      const { data: users, error, success } = await usersResponse.json();
+
+      resolve({ error, success, data: users });
+    } catch (error) {
+      reject({ error: (error as Error).message, success: false, data: null });
     }
-  );
-  const { data: users, error, success } = await usersResponse.json();
+  });
 
   return (
     <InternalDataLayout
