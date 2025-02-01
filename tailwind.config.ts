@@ -19,6 +19,7 @@ export default {
         "table-header": "#E9E9E9",
         "table-row-odd": "#FAFAFA",
         "table-row-even": "#FFFFFF",
+        warning: "#FFA800",
       },
       fontSize: {
         description: "0.8125rem",
