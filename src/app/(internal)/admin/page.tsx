@@ -15,6 +15,8 @@ import {
 } from "firebase/firestore";
 import { redirect } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 async function rearrangeFields(
   documentId: string,
   from: { id: string; value: string },
