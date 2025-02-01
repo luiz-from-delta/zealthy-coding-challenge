@@ -4,11 +4,9 @@
 
 html,
 body {
-  @apply overflow-hidden;
-
-  font-family: "Mulish", sans-serif;
+  @apply overflow-hidden font-mulish;
 }
 
 body {
-  @apply text-black bg-white;
+  @apply bg-white text-black;
 }

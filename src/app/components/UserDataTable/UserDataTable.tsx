@@ -1,8 +1,8 @@
 import { formatDate } from "@/app/utils/date";
 import { Columns, UserDataTableProps } from "./UserDataTable.types";
-import { TruncatedText } from "./TruncatedText";
 import { tableColumnWidthMap } from "@/app/config/table";
 import cx from "classnames";
+import { TruncatedText } from "../TruncatedText";
 
 const columns: Columns = {
   id: {

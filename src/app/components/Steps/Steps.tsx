@@ -4,10 +4,13 @@ import { useOnboarding, UserSchema, UserWithId } from "@/app/providers";
 import { Button } from "../Button";
 
 import { ArrowLeft, ArrowRight } from "phosphor-react";
-import { OnboardingCustomizationProps, OnboardingStep } from "../index";
-import { StepList } from "./Steps.types";
+import { StepActionResponse, StepList } from "./Steps.types";
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
+import { FirstStep, SecondStep, ThirdStep } from "../onboardingSteps";
+import { ComponentConfig } from "../OnboardingCustomization";
+
+const lastStep = 2;
 
 const fieldsMap: Record<string, keyof UserSchema> = {
   "About Me": "aboutMe",
@@ -15,110 +18,102 @@ const fieldsMap: Record<string, keyof UserSchema> = {
   "Birth Date": "birthDate",
 };
 
-export const steps: (
-  config: OnboardingCustomizationProps["config"]
-) => StepList = (config) => [
+async function execute(
+  method: "POST",
+  fields: UserSchema
+): Promise<StepActionResponse>;
+async function execute(
+  method: "PATCH",
+  fields: Partial<UserSchema>,
+  userId: number
+): Promise<StepActionResponse>;
+async function execute(
+  method: "PATCH" | "POST",
+  fields: Partial<UserSchema>,
+  userId?: number
+): Promise<StepActionResponse> {
+  const user = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL}/api/user${userId ? `/${userId}` : ""}`,
+    {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(fields),
+    }
+  );
+
+  return await user.json();
+}
+
+function mapFields(
+  config: ComponentConfig,
+  values: UserSchema | undefined,
+  pageName: keyof ComponentConfig
+) {
+  const components = config[pageName] || {};
+  const fields = Object.values(components);
+  return Object.fromEntries(
+    fields.map((field) => {
+      const key = fieldsMap[field];
+      const value = (values || {})[key];
+      return [key, value];
+    })
+  );
+}
+
+export const steps: (config: ComponentConfig) => StepList = (config) => [
   {
     name: "Email and Password",
-    getContent: () => OnboardingStep.FirstStep,
+    getContent: () => FirstStep,
     nextButton: {
       action: async (values?: UserSchema) => {
         const { email, password } = values || {};
 
-        const user = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`,
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              email,
-              password,
-            }),
-          }
-        );
-
-        return await user.json();
+        return execute("POST", {
+          email: String(email),
+          password: String(password),
+        });
       },
-      label: "Next",
       RightIcon: ArrowRight,
     },
   },
   {
     name: Object.values(config["second-page"] || {}).join(" and "),
-    getContent: () => OnboardingStep.SecondStep,
+    getContent: () => SecondStep,
     nextButton: {
       action: async (values?: UserSchema, user?: UserWithId) => {
-        const fields = Object.fromEntries(
-          Object.values(config["second-page"] || {}).map((field) => {
-            const key = fieldsMap[field];
-            const value = (values || {})[key];
-            return [key, value];
-          })
-        );
+        const fields = mapFields(config, values, "second-page");
 
-        const updatedUser = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/${user?.id}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(fields),
-          }
-        );
-
-        return await updatedUser.json();
+        return execute("PATCH", fields, Number(user?.id));
       },
-      label: "Next",
       RightIcon: ArrowRight,
     },
     prevButton: {
       action: () => {},
-      label: "Back",
       RightIcon: ArrowLeft,
     },
   },
   {
     name: Object.values(config["third-page"] || {}).join(" and "),
-    getContent: () => OnboardingStep.ThirdStep,
+    getContent: () => ThirdStep,
     nextButton: {
       action: async (values?: UserSchema, user?: UserWithId) => {
-        const fields = Object.fromEntries(
-          Object.values(config["third-page"] || {}).map((field) => {
-            const key = fieldsMap[field];
-            const value = (values || {})[key];
-            return [key, value];
-          })
-        );
+        const fields = mapFields(config, values, "third-page");
 
-        const updatedUser = await fetch(
-          `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/${user?.id}`,
-          {
-            method: "PATCH",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(fields),
-          }
-        );
-
-        return await updatedUser.json();
+        return execute("PATCH", fields, Number(user?.id));
       },
-      label: "Next",
       RightIcon: ArrowRight,
     },
     prevButton: {
       action: () => {},
-      label: "Back",
       RightIcon: ArrowLeft,
     },
   },
 ];
 
 export function Steps() {
-  const { form, index, next, prev, step, setUser, user } = useOnboarding();
+  const { form, index, next, prev, setUser, step, user } = useOnboarding();
   const { getContent, nextButton, prevButton } = step;
 
   const [isLoading, setIsLoading] = useState(false);
@@ -135,6 +130,7 @@ export function Steps() {
 
       try {
         setIsLoading(true);
+
         const response = await nextButton.action(values, user);
 
         if (response && response.success) {
@@ -145,14 +141,12 @@ export function Steps() {
 
         next();
 
-        if (index === 2) {
+        if (index === lastStep) {
           push("/success");
         }
       } catch (error) {
         console.error(error);
-        /**
-         * @todo Handle errors here, show error toasts, etc.
-         */
+
         alert((error as Error).message);
       } finally {
         setIsLoading(false);
@@ -174,6 +168,8 @@ export function Steps() {
             }}
             variant="outline"
             type="button"
+            LeftIcon={prevButton.LeftIcon}
+            RightIcon={prevButton.RightIcon}
           >
             {prevButton.label || "Back"}
           </Button>
@@ -181,7 +177,12 @@ export function Steps() {
           <div className="w-full" />
         )}
         {nextButton ? (
-          <Button type="submit" isLoading={isLoading}>
+          <Button
+            type="submit"
+            isLoading={isLoading}
+            LeftIcon={nextButton.LeftIcon}
+            RightIcon={nextButton.RightIcon}
+          >
             {isLoading ? "Loading..." : nextButton.label || "Next"}
           </Button>
         ) : (

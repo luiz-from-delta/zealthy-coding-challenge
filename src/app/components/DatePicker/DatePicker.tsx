@@ -29,14 +29,11 @@ export function DatePicker({
       </label>
       <div className="w-full relative">
         <ReactDatePicker
-          name={name}
-          wrapperClassName="w-full"
           calendarClassName="w-full !bg-[#FDFDFD] !border-[#F0F0F0]"
-          showPopperArrow={false}
-          popperClassName="w-full"
-          weekDayClassName={() =>
-            "!w-[54.5px] h-[38px] !inline-flex items-center justify-center font-mulish font-bold"
-          }
+          className={cx(
+            "w-full h-10 bg-input-background rounded text-paragraph text-input px-4 outline-none focus:ring-1 focus:ring-primary-green hover:ring-1 hover:ring-primary-green transition-all",
+            inputClassName
+          )}
           dayClassName={(date: Date) =>
             cx(
               "!w-[54.5px] h-[38px] !inline-flex items-center justify-center font-mulish",
@@ -45,18 +42,16 @@ export function DatePicker({
                 : "bg-[#F4F4F4] text-paragraph"
             )
           }
-          className={cx(
-            "w-full h-10 bg-input-background rounded text-paragraph text-input px-4 outline-none focus:ring-1 focus:ring-primary-green hover:ring-1 hover:ring-primary-green transition-all",
-            inputClassName
-          )}
-          placeholderText={placeholder}
-          selected={props.value}
+          name={name}
           onChange={props.onChange}
+          placeholderText={placeholder}
+          popperClassName="w-full"
           renderCustomHeader={({ date, decreaseMonth, increaseMonth }) => (
             <div className="w-full h-10 flex items-center justify-between px-4">
               <button
                 onClick={decreaseMonth}
                 className="w-8 h-8 rounded-full bg-opacity-10 bg-paragraph flex items-center justify-center"
+                type="button"
               >
                 <ArrowLeft />
               </button>
@@ -69,11 +64,18 @@ export function DatePicker({
               <button
                 onClick={increaseMonth}
                 className="w-8 h-8 rounded-full bg-opacity-10 bg-paragraph flex items-center justify-center"
+                type="button"
               >
                 <ArrowRight />
               </button>
             </div>
           )}
+          selected={props.value}
+          showPopperArrow={false}
+          wrapperClassName="w-full"
+          weekDayClassName={() =>
+            "!w-[54.5px] h-[38px] !inline-flex items-center justify-center font-mulish font-bold"
+          }
         />
       </div>
     </div>

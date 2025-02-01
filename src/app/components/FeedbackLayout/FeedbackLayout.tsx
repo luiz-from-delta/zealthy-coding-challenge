@@ -1,12 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { FeedbackLayoutProps } from "./FeedbackLayout.types";
 import cx from "classnames";
 
 import userSuccessVector from "@/app/assets/user-success-vector.svg";
 import userErrorVector from "@/app/assets/user-error-vector.svg";
-import Link from "next/link";
 
 import { ArrowCounterClockwise, ArrowRight } from "phosphor-react";
 

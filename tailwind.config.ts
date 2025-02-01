@@ -9,16 +9,16 @@ export default {
   theme: {
     extend: {
       colors: {
+        "dark-primary-green": "#3F945B",
         "input-background": "#EFEFEF",
         "light-lime": "#F2F4E9",
         "primary-green": "#59AA74",
-        "dark-primary-green": "#3F945B",
-        error: "#EE262A",
-        paragraph: "#273E56",
         "table-border": "#D8D8D8",
         "table-header": "#E9E9E9",
-        "table-row-odd": "#FAFAFA",
         "table-row-even": "#FFFFFF",
+        "table-row-odd": "#FAFAFA",
+        error: "#EE262A",
+        paragraph: "#273E56",
         warning: "#FFA800",
       },
       fontSize: {

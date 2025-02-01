@@ -10,6 +10,5 @@ export * from "./OnboardingCustomization";
 export * from "./Steps";
 export * from "./StepsIndicator";
 export * from "./StepsInstructions";
+export * from "./TruncatedText";
 export * from "./UserDataTable";
-
-export * as OnboardingStep from "./onboardingSteps";

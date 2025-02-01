@@ -1,59 +1,58 @@
 import {
+  ComponentConfig,
   InternalDataLayout,
   OnboardingCustomization,
-  OnboardingCustomizationProps,
 } from "@/app/components";
 import { firestore } from "@/app/lib/firebase";
 import {
   collection,
+  deleteField,
+  doc,
   getDocs,
   query,
-  doc,
-  updateDoc,
-  deleteField,
   setDoc,
+  updateDoc,
 } from "firebase/firestore";
 import { redirect } from "next/navigation";
 
-async function rearrange(
+async function rearrangeFields(
   documentId: string,
-  fieldId: string,
-  fieldValue: string,
-  otherField: string
-) {
+  from: { id: string; value: string },
+  to: { value: string }
+): Promise<void> {
   "use server";
 
-  const docRef = doc(firestore, "onboarding", documentId);
-  await updateDoc(docRef, {
-    [fieldId]: deleteField(),
+  const fromDocRef = doc(firestore, "onboarding", documentId);
+  await updateDoc(fromDocRef, {
+    [from.id]: deleteField(),
   });
-  await setDoc(docRef, {
-    "first-component": otherField,
+  await setDoc(fromDocRef, {
+    "first-component": to.value,
   });
 
-  const nextDocRef = doc(
-    firestore,
-    "onboarding",
-    documentId === "second-page" ? "third-page" : "second-page"
-  );
-  await updateDoc(nextDocRef, {
-    "second-component": fieldValue,
+  const otherDocumentId =
+    documentId === "second-page" ? "third-page" : "second-page";
+
+  const toDocRef = doc(firestore, "onboarding", otherDocumentId);
+  await updateDoc(toDocRef, {
+    "second-component": from.value,
   });
 
   redirect("/admin");
 }
 
 export default async function UserAdminPage() {
-  const config: OnboardingCustomizationProps["config"] =
-    {} as OnboardingCustomizationProps["config"];
+  const config = {} as ComponentConfig;
+
   const querySnapshot = await getDocs(
     query(collection(firestore, "onboarding"))
   );
+
   querySnapshot.forEach((snapshot) => {
-    config[snapshot.id as "second-page" | "third-page"] =
-      snapshot.data() as OnboardingCustomizationProps["config"][
-        | "second-page"
-        | "third-page"];
+    const key = snapshot.id as "second-page" | "third-page";
+    config[key] = snapshot.data() as ComponentConfig[
+      | "second-page"
+      | "third-page"];
   });
 
   return (
@@ -61,7 +60,10 @@ export default async function UserAdminPage() {
       title="Admin Panel"
       description="Control which data components appear on each step of the registration flow. Ensure every page has the right information by assigning components where they belong. Adjust settings anytime to keep things organized and efficient."
     >
-      <OnboardingCustomization config={config} rearrange={rearrange} />
+      <OnboardingCustomization
+        config={config}
+        rearrangeFields={rearrangeFields}
+      />
     </InternalDataLayout>
   );
 }

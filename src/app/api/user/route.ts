@@ -1,8 +1,9 @@
+import crypto from "node:crypto";
+
 import { db } from "@/app/lib/prisma";
 import { userSchema } from "./validations";
 import { cognitoService } from "@/app/lib/aws";
 import { CognitoIdentityServiceProvider } from "aws-sdk";
-import crypto from "node:crypto";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -79,7 +80,7 @@ export async function POST(request: Request) {
     if (user) {
       const secretHash = crypto
         .createHmac("sha256", process.env.AWS_COGNITO_CLIENT_SECRET || "")
-        .update(`${email}${process.env.AWS_COGNITO_CLIENT_ID}`)
+        .update(`${email}${process.env.AWS_COGNITO_CLIENT_ID || ""}`)
         .digest("base64");
 
       const auth = await cognitoService
@@ -142,7 +143,9 @@ export async function POST(request: Request) {
           .promise();
 
         if (!cognitoUser.User) {
-          throw new Error("User was not created correctly in Cognito!");
+          throw new Error(
+            "An error occurred while creating the user in Cognito."
+          );
         }
 
         const subAttribute = cognitoUser.User?.Attributes?.find((attribute) => {
@@ -150,7 +153,9 @@ export async function POST(request: Request) {
         });
 
         if (!subAttribute) {
-          throw new Error("It was not possible to get the Cognito id!");
+          throw new Error(
+            "An error occurred while creating the user in Cognito."
+          );
         }
 
         const cognitoId = String(subAttribute.Value);

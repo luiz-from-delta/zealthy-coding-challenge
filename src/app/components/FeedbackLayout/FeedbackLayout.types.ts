@@ -1,6 +1,6 @@
 export type FeedbackLayoutProps = {
-  title: string;
+  context: "success" | "error";
   description: string;
   nextURL: string;
-  context: "success" | "error";
+  title: string;
 };

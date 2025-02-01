@@ -8,7 +8,7 @@ import {
   useReducer,
   useState,
 } from "react";
-import { OnboardingCustomizationProps, Step, steps } from "@/app/components";
+import { ComponentConfig, Step, steps } from "@/app/components";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -19,20 +19,22 @@ export type UserSchema = z.infer<typeof userSchema>;
 export type UserWithId = UserSchema & { id: number };
 
 type OnboardingContextType = {
+  config: ComponentConfig;
   form: UseFormReturn<UserSchema>;
   index: number;
-  step: Step;
-  prev: () => void;
   next: () => void;
-  user: UserWithId;
+  prev: () => void;
   setUser: React.Dispatch<React.SetStateAction<UserWithId>>;
-  config: OnboardingCustomizationProps["config"];
+  step: Step;
+  user: UserWithId;
 };
+
+const stepsLength = 3;
 
 function reducer(state: number, action: { type: "prev" | "next" }): number {
   switch (action.type) {
     case "next":
-      if (state < 2) {
+      if (state < stepsLength - 1) {
         return state + 1;
       }
       return state;
@@ -51,14 +53,14 @@ export const OnboardingContext = createContext<OnboardingContextType>(
 );
 
 export function OnboardingProvider({
-  config,
   children,
+  config,
 }: React.PropsWithChildren<{
-  config: OnboardingCustomizationProps["config"];
+  config: ComponentConfig;
 }>) {
   const [index, dispatch] = useReducer(reducer, 0);
 
-  const [user, setUser] = useState<UserWithId>({} as UserWithId);
+  const [user, setUser] = useState({} as UserWithId);
 
   const form = useForm<UserSchema>({
     resolver: zodResolver(userSchema),
@@ -76,6 +78,7 @@ export function OnboardingProvider({
         birthDate: user.birthDate,
         address: user.address,
       })
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         .filter(([_, value]) => value)
         .map(([key]) => [key, true])
     );
@@ -112,11 +115,11 @@ export function OnboardingProvider({
   const value = useMemo(
     () => ({
       index,
-      step: steps(config)[index],
-      prev: () => dispatch({ type: "prev" }),
       next: () => dispatch({ type: "next" }),
-      user,
+      prev: () => dispatch({ type: "prev" }),
       setUser,
+      step: steps(config)[index],
+      user,
     }),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [index, user]

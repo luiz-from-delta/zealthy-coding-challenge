@@ -1,10 +1,9 @@
 import { useOnboarding } from "@/app/providers";
-import { AddressInputProps } from "./AddressInput.types";
 
 const inputClassName =
   "text-paragraph text-input w-full h-10 rounded bg-input-background px-4  outline-none focus:ring-1 focus:ring-primary-green hover:ring-1 hover:ring-primary-green transition-all";
 
-export function AddressInput({}: AddressInputProps) {
+export function AddressInput() {
   const { form } = useOnboarding();
   const { register } = form;
 

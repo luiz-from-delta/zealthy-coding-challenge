@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { Mulish } from "next/font/google";
+
 import "./globals.css";
 
 import { Header } from "@/app/components";
 
 import bottomBarLine from "@/app/assets/bottom-bar-line.svg";
-import Image from "next/image";
 
 const mulishSans = Mulish({
   variable: "--font-mulish-sans",
@@ -27,9 +28,11 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${mulishSans.variable} antialiased relative`}>
         <Header />
+
         <main className="w-full h-[calc(100vh-100px)] overflow-x-hidden overflow-y-auto">
           {children}
         </main>
+
         <div className="w-full h-3 absolute left-0 bottom-6 flex justify-center">
           <Image src={bottomBarLine} alt="" />
         </div>

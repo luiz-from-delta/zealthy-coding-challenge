@@ -3,13 +3,14 @@ import { userPatchSchema } from "../validations";
 
 export async function PATCH(
   request: Request,
-  { params }: { params: Promise<{ id: string }> }
+  context: { params: Promise<{ id: string }> }
 ) {
   const body = await request.json();
 
-  const validation = userPatchSchema.safeParse(body);
+  const params = await context.params;
+  const id = parseInt(params.id);
 
-  const id = parseInt((await params).id);
+  const validation = userPatchSchema.safeParse(body);
 
   if (!validation.success) {
     return new Response(

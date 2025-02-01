@@ -1,5 +1,3 @@
-import { Icon } from "phosphor-react";
-
 export type TextareaProps =
   React.TextareaHTMLAttributes<HTMLTextAreaElement> & {
     wrapperClassName?: string;

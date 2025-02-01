@@ -1,7 +1,7 @@
 import { UserSchema, UserWithId } from "@/app/providers";
 import { Icon } from "phosphor-react";
 
-type StepActionResponse =
+export type StepActionResponse =
   | {
       data: UserWithId;
       error: null;
@@ -13,19 +13,21 @@ type StepActionResponse =
       success: false;
     };
 
+type StepAction = (
+  values?: UserSchema,
+  user?: UserWithId
+) => StepActionResponse | Promise<StepActionResponse> | void;
+
 type StepActionButton = {
+  action: StepAction;
   label?: string;
   LeftIcon?: Icon;
   RightIcon?: Icon;
-  action: (
-    values?: UserSchema,
-    user?: UserWithId
-  ) => StepActionResponse | Promise<StepActionResponse> | void;
 };
 
 export type Step = {
-  name: string;
   getContent: () => React.FC;
+  name: string;
   nextButton?: StepActionButton;
   prevButton?: StepActionButton;
 };

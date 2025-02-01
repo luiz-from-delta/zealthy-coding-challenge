@@ -2,11 +2,11 @@ import { ButtonProps } from "./Button.types";
 import cx from "classnames";
 
 export function Button({
-  LeftIcon,
-  RightIcon,
   children,
   className,
   isLoading = false,
+  LeftIcon,
+  RightIcon,
   variant = "primary",
   ...props
 }: ButtonProps) {
@@ -14,7 +14,7 @@ export function Button({
     <button
       {...props}
       className={cx(
-        "w-full h-10 rounded font-bold transition-colors",
+        "w-full h-10 rounded font-bold transition-colors flex justify-center items-center gap-3",
         {
           "bg-primary-green text-white hover:bg-dark-primary-green":
             variant === "primary",

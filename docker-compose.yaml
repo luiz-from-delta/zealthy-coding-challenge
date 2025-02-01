@@ -9,8 +9,6 @@ services:
         condition: service_healthy
     env_file:
       - .env
-    environment:
-      - DATABASE_URL=postgresql://root:example@db:5432/users?schema=public
     networks:
       - node-network
     ports:
@@ -22,15 +20,15 @@ services:
   db:
     container_name: db
     environment:
+      POSTGRES_DB: users
       POSTGRES_USER: root
       POSTGRES_PASSWORD: example
-      POSTGRES_DB: users
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "root", "-d", "users"]
       interval: 30s
       retries: 3
-      timeout: 10s
       start_period: 10s
+      test: ["CMD", "pg_isready", "-U", "root", "-d", "users"]
+      timeout: 10s
     image: postgres:latest
     networks:
       - node-network

@@ -1,6 +1,6 @@
 import { collection, getDocs, query } from "firebase/firestore";
 import {
-  OnboardingCustomizationProps,
+  ComponentConfig,
   Steps,
   StepsIndicator,
   StepsInstructions,
@@ -9,16 +9,17 @@ import { OnboardingProvider } from "../providers";
 import { firestore } from "../lib/firebase";
 
 export default async function Home() {
-  const config: OnboardingCustomizationProps["config"] =
-    {} as OnboardingCustomizationProps["config"];
+  const config = {} as ComponentConfig;
+
   const querySnapshot = await getDocs(
     query(collection(firestore, "onboarding"))
   );
+
   querySnapshot.forEach((snapshot) => {
-    config[snapshot.id as "second-page" | "third-page"] =
-      snapshot.data() as OnboardingCustomizationProps["config"][
-        | "second-page"
-        | "third-page"];
+    const key = snapshot.id as "second-page" | "third-page";
+    config[key] = snapshot.data() as ComponentConfig[
+      | "second-page"
+      | "third-page"];
   });
 
   return (
