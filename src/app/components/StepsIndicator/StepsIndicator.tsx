@@ -1,13 +1,17 @@
+"use client";
+
 import { useOnboarding } from "@/app/providers";
 import { steps } from "../Steps/Steps";
 import cx from "classnames";
 
 export function StepsIndicator() {
-  const { index: currentIndex } = useOnboarding();
+  const { config, index: currentIndex } = useOnboarding();
+
+  console.log({ config });
 
   return (
     <div className="w-full flex items-center gap-1">
-      {steps.map((step, index) => (
+      {steps(config).map((step, index) => (
         <div key={step.name} className="flex-1 flex flex-col gap-3">
           <div
             className={cx(

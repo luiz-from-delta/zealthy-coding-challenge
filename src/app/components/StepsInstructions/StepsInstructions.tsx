@@ -1,3 +1,5 @@
+"use client";
+
 import { useOnboarding } from "@/app/providers";
 import Image from "next/image";
 

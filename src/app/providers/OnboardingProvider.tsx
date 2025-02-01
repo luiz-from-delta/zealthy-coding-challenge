@@ -7,7 +7,7 @@ import {
   useReducer,
   useState,
 } from "react";
-import { Step, steps } from "@/app/components";
+import { OnboardingCustomizationProps, Step, steps } from "@/app/components";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
@@ -25,12 +25,13 @@ type OnboardingContextType = {
   next: () => void;
   user: UserWithId;
   setUser: React.Dispatch<React.SetStateAction<UserWithId>>;
+  config: OnboardingCustomizationProps["config"];
 };
 
 function reducer(state: number, action: { type: "prev" | "next" }): number {
   switch (action.type) {
     case "next":
-      if (state < steps.length - 1) {
+      if (state < 2) {
         return state + 1;
       }
       return state;
@@ -48,7 +49,12 @@ export const OnboardingContext = createContext<OnboardingContextType>(
   {} as OnboardingContextType
 );
 
-export function OnboardingProvider({ children }: React.PropsWithChildren) {
+export function OnboardingProvider({
+  config,
+  children,
+}: React.PropsWithChildren<{
+  config: OnboardingCustomizationProps["config"];
+}>) {
   const [index, dispatch] = useReducer(reducer, 0);
 
   const [user, setUser] = useState<UserWithId>({} as UserWithId);
@@ -61,7 +67,7 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
   const value = useMemo(
     () => ({
       index,
-      step: steps[index],
+      step: steps(config)[index],
       prev: () => dispatch({ type: "prev" }),
       next: () => dispatch({ type: "next" }),
       user,
@@ -71,7 +77,7 @@ export function OnboardingProvider({ children }: React.PropsWithChildren) {
   );
 
   return (
-    <OnboardingContext.Provider value={{ form, ...value }}>
+    <OnboardingContext.Provider value={{ config, form, ...value }}>
       {children}
     </OnboardingContext.Provider>
   );

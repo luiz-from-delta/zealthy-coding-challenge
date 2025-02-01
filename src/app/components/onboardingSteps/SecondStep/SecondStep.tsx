@@ -1,26 +1,19 @@
 "use client";
 
 import { useOnboarding } from "@/app/providers";
-import { Textarea } from "../../Textarea";
-import { StepLayout } from "../StepLayout";
-import { ErrorWrapper } from "../../ErrorWrapper";
+import { componentsMap, StepLayout } from "../StepLayout";
 
 export function SecondStep() {
-  const { form } = useOnboarding();
-  const {
-    formState: { errors },
-    register,
-  } = form;
+  const { config } = useOnboarding();
 
   return (
     <StepLayout>
-      <ErrorWrapper error={errors.aboutMe?.message}>
-        <Textarea
-          label="About Me"
-          placeholder="Tell us about yourself..."
-          {...register("aboutMe")}
-        />
-      </ErrorWrapper>
+      {Object.values(config["second-page"]).map((componentName) => {
+        const Component =
+          componentsMap[componentName as keyof typeof componentsMap];
+
+        return <Component key={componentName} />;
+      })}
     </StepLayout>
   );
 }

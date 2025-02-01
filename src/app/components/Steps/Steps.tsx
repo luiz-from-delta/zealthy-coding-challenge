@@ -4,14 +4,22 @@ import { useOnboarding, UserSchema, UserWithId } from "@/app/providers";
 import { Button } from "../Button";
 
 import { ArrowLeft, ArrowRight } from "phosphor-react";
-import { OnboardingStep } from "../index";
+import { OnboardingCustomizationProps, OnboardingStep } from "../index";
 import { StepList } from "./Steps.types";
 import { useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 
-export const steps: StepList = [
+const fieldsMap: Record<string, keyof UserSchema> = {
+  "About Me": "aboutMe",
+  Address: "address",
+  "Birth Date": "birthDate",
+};
+
+export const steps: (
+  config: OnboardingCustomizationProps["config"]
+) => StepList = (config) => [
   {
-    name: "Email and password",
+    name: "Email and Password",
     getContent: () => OnboardingStep.FirstStep,
     nextButton: {
       action: async (values?: UserSchema) => {
@@ -38,11 +46,17 @@ export const steps: StepList = [
     },
   },
   {
-    name: "About me",
+    name: Object.values(config["second-page"] || {}).join(" and "),
     getContent: () => OnboardingStep.SecondStep,
     nextButton: {
       action: async (values?: UserSchema, user?: UserWithId) => {
-        const { aboutMe } = values || {};
+        const fields = Object.fromEntries(
+          Object.values(config["second-page"] || {}).map((field) => {
+            const key = fieldsMap[field];
+            const value = (values || {})[key];
+            return [key, value];
+          })
+        );
 
         const updatedUser = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/${user?.id}`,
@@ -51,9 +65,7 @@ export const steps: StepList = [
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              aboutMe,
-            }),
+            body: JSON.stringify(fields),
           }
         );
 
@@ -69,11 +81,17 @@ export const steps: StepList = [
     },
   },
   {
-    name: "Address and birth date",
+    name: Object.values(config["third-page"] || {}).join(" and "),
     getContent: () => OnboardingStep.ThirdStep,
     nextButton: {
       action: async (values?: UserSchema, user?: UserWithId) => {
-        const { address, birthDate } = values || {};
+        const fields = Object.fromEntries(
+          Object.values(config["second-page"] || {}).map((field) => {
+            const key = fieldsMap[field];
+            const value = (values || {})[key];
+            return [key, value];
+          })
+        );
 
         const updatedUser = await fetch(
           `${process.env.NEXT_PUBLIC_BASE_URL}/api/user/${user?.id}`,
@@ -82,10 +100,7 @@ export const steps: StepList = [
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({
-              address,
-              birthDate,
-            }),
+            body: JSON.stringify(fields),
           }
         );
 
@@ -128,15 +143,13 @@ export function Steps() {
           throw new Error(response.error);
         }
 
-        setTimeout(() => {
-          next();
+        next();
 
-          if (index === 2) {
-            push("/success");
-          }
-        }, 0);
+        if (index === 2) {
+          push("/success");
+        }
       } catch (error) {
-        console.error(error);
+        console.error("aqui", error);
         /**
          * @todo Handle errors here, show error toasts, etc.
          */
