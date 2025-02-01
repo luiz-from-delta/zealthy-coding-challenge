@@ -27,6 +27,7 @@ export default async function UserDataPreviewPage() {
         `${process.env.NEXT_PUBLIC_BASE_URL}/api/user`,
         {
           method: "GET",
+          cache: "no-store",
         }
       );
       const { data: users, error, success } = await usersResponse.json();
