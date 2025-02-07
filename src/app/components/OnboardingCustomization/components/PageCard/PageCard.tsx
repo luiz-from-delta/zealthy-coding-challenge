@@ -5,7 +5,6 @@ import { PageCardProps } from "./PageCard.types";
 
 export function PageCard({
   component,
-  componentIndex,
   components,
   pageIndex,
   rearrangeFields,
@@ -51,14 +50,9 @@ export function PageCard({
             onClick={() => {
               rearrangeFields(
                 pageIndex === 1 ? "second-page" : "third-page",
-                {
-                  id: componentIndex ? "first-component" : "second-component",
-                  value: component.name,
-                },
-                {
-                  value: components.find(({ name }) => component.name !== name)
-                    ?.name as string,
-                }
+                component.name,
+                components.find(({ name }) => component.name !== name)
+                  ?.name as string
               );
             }}
           >

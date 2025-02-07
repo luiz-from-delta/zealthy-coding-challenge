@@ -8,6 +8,8 @@ import {
 import { OnboardingProvider } from "../providers";
 import { firestore } from "../lib/firebase";
 
+export const dynamic = "force-dynamic";
+
 export default async function Home() {
   const config = {} as ComponentConfig;
 

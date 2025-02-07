@@ -4,41 +4,24 @@ import {
   OnboardingCustomization,
 } from "@/app/components";
 import { firestore } from "@/app/lib/firebase";
-import {
-  collection,
-  deleteField,
-  doc,
-  getDocs,
-  query,
-  setDoc,
-  updateDoc,
-} from "firebase/firestore";
+import { collection, doc, getDocs, query, setDoc } from "firebase/firestore";
 import { redirect } from "next/navigation";
 
 export const dynamic = "force-dynamic";
 
-async function rearrangeFields(
-  documentId: string,
-  from: { id: string; value: string },
-  to: { value: string }
-): Promise<void> {
+async function updateFields(components: ComponentConfig): Promise<void> {
   "use server";
 
-  const fromDocRef = doc(firestore, "onboarding", documentId);
-  await updateDoc(fromDocRef, {
-    [from.id]: deleteField(),
-  });
-  await setDoc(fromDocRef, {
-    "first-component": to.value,
-  });
+  for (const [pageName, pageComponents] of Object.entries(components)) {
+    const docRef = doc(firestore, "onboarding", pageName);
 
-  const otherDocumentId =
-    documentId === "second-page" ? "third-page" : "second-page";
-
-  const toDocRef = doc(firestore, "onboarding", otherDocumentId);
-  await updateDoc(toDocRef, {
-    "second-component": from.value,
-  });
+    await setDoc(docRef, {
+      "first-component": pageComponents["first-component"],
+      ...(pageComponents["second-component"] && {
+        "second-component": pageComponents["second-component"],
+      }),
+    });
+  }
 
   redirect("/admin");
 }
@@ -63,8 +46,8 @@ export default async function UserAdminPage() {
       description="Control which data components appear on each step of the registration flow. Ensure every page has the right information by assigning components where they belong. Adjust settings anytime to keep things organized and efficient."
     >
       <OnboardingCustomization
-        config={config}
-        rearrangeFields={rearrangeFields}
+        initialConfig={config}
+        updateFields={updateFields}
       />
     </InternalDataLayout>
   );

@@ -1,14 +1,40 @@
 "use client";
 
-import { useMemo } from "react";
-import { OnboardingCustomizationProps } from "./OnboardingCustomization.types";
+import { useCallback, useMemo, useState } from "react";
+import {
+  ComponentConfig,
+  OnboardingCustomizationProps,
+} from "./OnboardingCustomization.types";
 import { pages } from "@/app/config/pages";
 import { PageCard } from "./components";
+import { Button } from "../Button";
+import { RearrangeFields } from "./components/PageCard/PageCard.types";
 
 export function OnboardingCustomization({
-  config,
-  rearrangeFields,
+  initialConfig,
+  updateFields,
 }: OnboardingCustomizationProps) {
+  const [config, setConfig] = useState<ComponentConfig>(initialConfig);
+
+  const rearrangeFields = useCallback<RearrangeFields>(
+    (fromPage, fromField, toField) => {
+      const targetPage =
+        fromPage === "second-page" ? "third-page" : "second-page";
+
+      setConfig((prevState) => ({
+        ...prevState,
+        [fromPage]: {
+          "first-component": toField,
+        },
+        [targetPage]: {
+          ...prevState[targetPage],
+          "second-component": fromField,
+        },
+      }));
+    },
+    []
+  );
+
   const actualPages = useMemo(
     () =>
       pages.map((page, pageIndex) => {
@@ -46,11 +72,10 @@ export function OnboardingCustomization({
               {page.title}
             </span>
             <ul className="w-full flex flex-col gap-3">
-              {page.components.map((component, componentIndex, components) => (
+              {page.components.map((component, _, components) => (
                 <PageCard
                   key={component.name}
                   component={component}
-                  componentIndex={componentIndex}
                   components={components}
                   pageIndex={pageIndex}
                   rearrangeFields={rearrangeFields}
@@ -60,6 +85,10 @@ export function OnboardingCustomization({
           </div>
         ))}
       </div>
+
+      <Button className="!w-[120px]" onClick={() => updateFields(config)}>
+        Update
+      </Button>
     </div>
   );
 }

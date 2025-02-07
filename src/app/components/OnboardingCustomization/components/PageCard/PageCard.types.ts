@@ -1,13 +1,14 @@
 import { Component } from "@/app/config/pages";
 
+export type RearrangeFields = (
+  fromPage: string,
+  fromField: string,
+  toField: string
+) => void;
+
 export type PageCardProps = {
   component: Component;
-  componentIndex: number;
   components: Component[];
   pageIndex: number;
-  rearrangeFields: (
-    documentId: string,
-    from: { id: string; value: string },
-    to: { value: string }
-  ) => void;
+  rearrangeFields: RearrangeFields;
 };
