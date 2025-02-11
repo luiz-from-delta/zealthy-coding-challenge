@@ -1,3 +1,5 @@
+![Thumbnail](./src/app/assets/thumbnail.png)
+
 # Zealthy Coding Challenge 🚀
 
 This is a coding challenge provided by **Zealthy** for the role of **Senior Full Stack Engineer**. The goal of this exercise is to create a **Custom Onboarding Flow** for users.
